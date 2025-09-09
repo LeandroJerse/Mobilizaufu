@@ -77,7 +77,7 @@ export default function BicicletasPage() {
       } else {
         alert(data.error || 'Erro ao reservar bicicleta')
       }
-    } catch (error) {
+    } catch {
       alert('Erro de conexão. Tente novamente.')
     } finally {
       setIsReserving(false)
