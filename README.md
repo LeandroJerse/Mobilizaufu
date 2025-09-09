@@ -251,6 +251,23 @@ Este projeto foi desenvolvido como trabalho acadêmico para a disciplina de Enge
 - **Giovana M Ferreira** - 1221bcc033  
 - **Leandro Marques Gontijo Jersé** - 12311BCC044
 
+## 🚀 Deploy na Vercel
+
+### Configuração
+
+1. **Conecte seu repositório GitHub à Vercel**
+2. **Configure as variáveis de ambiente na Vercel:**
+   - `DATABASE_URL`: `file:./dev.db`
+   - `JWT_SECRET`: `mobilizaufu-super-secret-key-2025`
+   - `NEXTAUTH_URL`: `https://seu-dominio.vercel.app`
+   - `NEXTAUTH_SECRET`: `mobilizaufu-nextauth-secret`
+
+3. **Deploy automático** será feito a cada push na branch main
+
+### Status do Build
+
+✅ **Build funcionando perfeitamente!** Todos os erros de TypeScript e ESLint foram corrigidos.
+
 ## 📞 Contato
 
 Para dúvidas ou sugestões, entre em contato através do email: ufumobiliza@gmail.com

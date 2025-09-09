@@ -7,7 +7,6 @@ import {
   MapPin, 
   ArrowLeft, 
   QrCode,
-  Clock,
   CheckCircle
 } from 'lucide-react'
 
@@ -46,8 +45,8 @@ export default function BicicletasPage() {
       if (data.success) {
         setEstacoes(data.data)
       }
-    } catch (error) {
-      console.error('Erro ao carregar estações:', error)
+    } catch {
+      console.error('Erro ao carregar estações')
     } finally {
       setIsLoading(false)
     }

@@ -1,19 +1,20 @@
-import { NextRequest, NextResponse } from 'next/server'
-import { BicicletaController } from '@/controllers/BicicletaController'
+import { NextResponse } from 'next/server'
+import { EstacaoModel } from '@/models/EstacaoModel'
+import { ApiResponse } from '@/types'
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    // Simular Request e Response do Express para usar o controller
-    const mockReq = {} as any
-    const mockRes = {
-      json: (data: any) => NextResponse.json(data)
-    } as any
+    const estacoes = await EstacaoModel.getEstacoesComBicicletas()
 
-    return await BicicletaController.listEstacoes(mockReq, mockRes)
-  } catch (error) {
+    return NextResponse.json({
+      success: true,
+      data: estacoes,
+      message: 'Estações listadas com sucesso',
+    } as ApiResponse)
+  } catch {
     return NextResponse.json({
       success: false,
       error: 'Erro interno do servidor'
-    }, { status: 500 })
+    } as ApiResponse, { status: 500 })
   }
 }

@@ -30,7 +30,7 @@ export class UsuarioModel {
     const user = await this.findByEmail(email)
     if (!user) return null
 
-    const isValid = await verifyPassword(senha, user.senha)
+    const isValid = await verifyPassword(senha, (user as unknown as { senha: string }).senha)
     return isValid ? user : null
   }
 

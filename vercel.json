@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": ".next",
+  "framework": "nextjs",
+  "env": {
+    "DATABASE_URL": "file:./dev.db",
+    "JWT_SECRET": "mobilizaufu-super-secret-key-2025",
+    "NEXTAUTH_URL": "https://mobilizaufu.vercel.app",
+    "NEXTAUTH_SECRET": "mobilizaufu-nextauth-secret"
+  }
+}

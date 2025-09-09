@@ -250,8 +250,8 @@ export default function OnibusPage() {
               <div className="mt-2 text-sm text-blue-700">
                 <ul className="list-disc list-inside space-y-1">
                   <li>Os horários são atualizados em tempo real</li>
-                  <li>Status "Atrasado" indica atraso de mais de 2 minutos</li>
-                  <li>Status "Adiantado" indica chegada antes do previsto</li>
+                  <li>Status &quot;Atrasado&quot; indica atraso de mais de 2 minutos</li>
+                  <li>Status &quot;Adiantado&quot; indica chegada antes do previsto</li>
                   <li>Em caso de cancelamento, o status será atualizado automaticamente</li>
                 </ul>
               </div>

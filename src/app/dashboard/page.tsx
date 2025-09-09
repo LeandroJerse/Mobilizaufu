@@ -21,10 +21,25 @@ interface User {
   tipoUsuario: string
 }
 
+interface Estacao {
+  id: string
+  nome: string
+  localizacaoLat: number
+  localizacaoLng: number
+  capacidadeTotal: number
+  bicicletas: Bicicleta[]
+}
+
+interface Bicicleta {
+  id: string
+  numeroSerie: string
+  status: string
+}
+
 export default function DashboardPage() {
   const router = useRouter()
   const [user, setUser] = useState<User | null>(null)
-  const [estacoes, setEstacoes] = useState<any[]>([])
+  const [estacoes, setEstacoes] = useState<Estacao[]>([])
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {

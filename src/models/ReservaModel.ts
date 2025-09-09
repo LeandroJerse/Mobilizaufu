@@ -11,104 +11,88 @@ export class ReservaModel {
     // Gerar código QR único
     const codigoQR = await QRCode.toDataURL(`${data.usuarioId}-${data.bicicletaId}-${Date.now()}`)
     
-    return prisma.reserva.create({
+    const reserva = await prisma.reserva.create({
       data: {
         ...data,
         codigoQR,
         status: 'ATIVA',
       },
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
     })
+    
+    return {
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }
   }
 
   static async findById(id: string): Promise<Reserva | null> {
-    return prisma.reserva.findUnique({
+    const reserva = await prisma.reserva.findUnique({
       where: { id },
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
     })
+    
+    if (!reserva) return null
+    
+    return {
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }
   }
 
   static async findByUsuario(usuarioId: string): Promise<Reserva[]> {
-    return prisma.reserva.findMany({
+    const reservas = await prisma.reserva.findMany({
       where: { usuarioId },
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
       orderBy: { createdAt: 'desc' },
     })
+    
+    return reservas.map(reserva => ({
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }))
   }
 
   static async findByBicicleta(bicicletaId: string): Promise<Reserva[]> {
-    return prisma.reserva.findMany({
+    const reservas = await prisma.reserva.findMany({
       where: { bicicletaId },
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
       orderBy: { createdAt: 'desc' },
     })
+    
+    return reservas.map(reserva => ({
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }))
   }
 
   static async findAtivas(usuarioId?: string): Promise<Reserva[]> {
-    return prisma.reserva.findMany({
+    const reservas = await prisma.reserva.findMany({
       where: {
         status: 'ATIVA',
         ...(usuarioId && { usuarioId }),
       },
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
       orderBy: { createdAt: 'desc' },
     })
+    
+    return reservas.map(reserva => ({
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }))
   }
 
-  static async update(id: string, data: Partial<Reserva>): Promise<Reserva> {
-    return prisma.reserva.update({
+  static async update(id: string, data: {
+    dataHoraRetirada?: Date | null
+    dataHoraDevolucao?: Date | null
+    codigoQR?: string | null
+    status?: 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    estacaoDevolucaoId?: string | null
+  }): Promise<Reserva> {
+    const reserva = await prisma.reserva.update({
       where: { id },
       data,
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
     })
+    
+    return {
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }
   }
 
   static async finalizarReserva(id: string, estacaoDevolucaoId: string): Promise<Reserva> {
@@ -142,17 +126,13 @@ export class ReservaModel {
   }
 
   static async list(): Promise<Reserva[]> {
-    return prisma.reserva.findMany({
-      include: {
-        usuario: true,
-        bicicleta: {
-          include: {
-            estacao: true,
-          },
-        },
-        estacaoDevolucao: true,
-      },
+    const reservas = await prisma.reserva.findMany({
       orderBy: { createdAt: 'desc' },
     })
+    
+    return reservas.map(reserva => ({
+      ...reserva,
+      status: reserva.status as 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA'
+    }))
   }
 }

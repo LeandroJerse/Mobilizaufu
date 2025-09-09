@@ -1,11 +1,8 @@
 'use client'
 
-import { useState } from 'react'
-import { MapPin, Bike, Users, Bus, Leaf, LogIn, UserPlus } from 'lucide-react'
+import { Bike, Users, Bus, Leaf, LogIn, UserPlus } from 'lucide-react'
 
 export default function Home() {
-  const [isLoginOpen, setIsLoginOpen] = useState(false)
-  const [isRegisterOpen, setIsRegisterOpen] = useState(false)
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
@@ -18,20 +15,20 @@ export default function Home() {
               <h1 className="ml-2 text-2xl font-bold text-gray-900">MobilizaUFU</h1>
             </div>
             <div className="flex space-x-4">
-              <button
-                onClick={() => setIsLoginOpen(true)}
+              <a
+                href="/login"
                 className="flex items-center px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
               >
                 <LogIn className="h-4 w-4 mr-2" />
                 Entrar
-              </button>
-              <button
-                onClick={() => setIsRegisterOpen(true)}
+              </a>
+              <a
+                href="/register"
                 className="flex items-center px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md hover:bg-green-700"
               >
                 <UserPlus className="h-4 w-4 mr-2" />
                 Cadastrar
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -48,16 +45,16 @@ export default function Home() {
             Conecte-se com opções de transporte ecológicas. Reserve bicicletas, 
             organize caronas e consulte horários de ônibus em uma única plataforma.
           </p>
-          <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
-            <div className="rounded-md shadow">
-              <button
-                onClick={() => setIsRegisterOpen(true)}
-                className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
-              >
-                Começar Agora
-              </button>
+            <div className="mt-5 max-w-md mx-auto sm:flex sm:justify-center md:mt-8">
+              <div className="rounded-md shadow">
+                <a
+                  href="/register"
+                  className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-green-600 hover:bg-green-700 md:py-4 md:text-lg md:px-10"
+                >
+                  Começar Agora
+                </a>
+              </div>
             </div>
-          </div>
         </div>
 
         {/* Features */}

@@ -72,7 +72,7 @@ export default function RegisterPage() {
       } else {
         setError(data.error || 'Erro ao criar conta')
       }
-    } catch (error) {
+    } catch {
       setError('Erro de conexão. Tente novamente.')
     } finally {
       setIsLoading(false)

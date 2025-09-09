@@ -2,14 +2,14 @@ export interface Usuario {
   id: string;
   nome: string;
   email: string;
-  tipoUsuario: 'ESTUDANTE' | 'PROFESSOR_FUNCIONARIO' | 'ADMINISTRADOR';
-  telefone?: string;
-  cursoDepartamento?: string;
-  matricula?: string;
-  periodo?: string;
-  siape?: string;
-  cargo?: string;
-  nivelAcesso?: string;
+  tipoUsuario: string;
+  telefone?: string | null;
+  cursoDepartamento?: string | null;
+  matricula?: string | null;
+  periodo?: string | null;
+  siape?: string | null;
+  cargo?: string | null;
+  nivelAcesso?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -28,7 +28,7 @@ export interface Bicicleta {
   id: string;
   numeroSerie: string;
   status: 'DISPONIVEL' | 'EM_USO' | 'MANUTENCAO' | 'INDISPONIVEL';
-  dataUltimaManutencao?: Date;
+  dataUltimaManutencao?: Date | null;
   estacaoId: string;
   estacao?: Estacao;
   createdAt: Date;
@@ -38,16 +38,16 @@ export interface Bicicleta {
 export interface Reserva {
   id: string;
   dataHoraReserva: Date;
-  dataHoraRetirada?: Date;
-  dataHoraDevolucao?: Date;
-  codigoQR?: string;
+  dataHoraRetirada?: Date | null;
+  dataHoraDevolucao?: Date | null;
+  codigoQR?: string | null;
   status: 'ATIVA' | 'CONCLUIDA' | 'CANCELADA' | 'EXPIRADA';
   usuarioId: string;
   usuario?: Usuario;
   bicicletaId: string;
   bicicleta?: Bicicleta;
-  estacaoDevolucaoId?: string;
-  estacaoDevolucao?: Estacao;
+  estacaoDevolucaoId?: string | null;
+  estacaoDevolucao?: Estacao | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -130,7 +130,7 @@ export interface RegisterRequest {
   nome: string;
   email: string;
   senha: string;
-  tipoUsuario: 'ESTUDANTE' | 'PROFESSOR_FUNCIONARIO' | 'ADMINISTRADOR';
+  tipoUsuario: string;
   telefone?: string;
   cursoDepartamento?: string;
   matricula?: string;
@@ -153,7 +153,7 @@ export interface CaronaRequest {
   observacoes?: string;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;
   message?: string;

@@ -1,48 +1,58 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BicicletaController } from '@/controllers/BicicletaController'
+import { BicicletaModel } from '@/models/BicicletaModel'
+import { ApiResponse } from '@/types'
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url)
     const estacaoId = searchParams.get('estacaoId')
     
-    // Simular Request e Response do Express para usar o controller
-    const mockReq = {
-      query: { estacaoId }
-    } as any
-    const mockRes = {
-      json: (data: any) => NextResponse.json(data)
-    } as any
+    let bicicletas
+    if (estacaoId) {
+      bicicletas = await BicicletaModel.findByEstacao(estacaoId)
+    } else {
+      bicicletas = await BicicletaModel.findDisponiveis()
+    }
 
-    return await BicicletaController.listBicicletas(mockReq, mockRes)
-  } catch (error) {
+    return NextResponse.json({
+      success: true,
+      data: bicicletas,
+      message: 'Bicicletas listadas com sucesso',
+    } as ApiResponse)
+  } catch {
     return NextResponse.json({
       success: false,
       error: 'Erro interno do servidor'
-    }, { status: 500 })
+    } as ApiResponse, { status: 500 })
   }
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json()
-    
-    // Simular Request e Response do Express para usar o controller
-    const mockReq = {
-      body,
-    } as any
-    const mockRes = {
-      status: (code: number) => ({
-        json: (data: any) => NextResponse.json(data, { status: code })
-      }),
-      json: (data: any) => NextResponse.json(data)
-    } as any
+    const { numeroSerie, estacaoId, status } = await req.json()
 
-    return await BicicletaController.createBicicleta(mockReq, mockRes)
-  } catch (error) {
+    if (!numeroSerie || !estacaoId) {
+      return NextResponse.json({
+        success: false,
+        error: 'Número de série e ID da estação são obrigatórios',
+      } as ApiResponse, { status: 400 })
+    }
+
+    const bicicleta = await BicicletaModel.create({
+      numeroSerie,
+      estacaoId,
+      status,
+    })
+
+    return NextResponse.json({
+      success: true,
+      data: bicicleta,
+      message: 'Bicicleta criada com sucesso',
+    } as ApiResponse, { status: 201 })
+  } catch {
     return NextResponse.json({
       success: false,
       error: 'Erro interno do servidor'
-    }, { status: 500 })
+    } as ApiResponse, { status: 500 })
   }
 }

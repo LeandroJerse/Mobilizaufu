@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma'
-import { Estacao } from '@/types'
+import { Estacao, Bicicleta } from '@/types'
 
 export class EstacaoModel {
   static async create(data: {
@@ -38,8 +38,8 @@ export class EstacaoModel {
     })
   }
 
-  static async getEstacoesComBicicletas(): Promise<(Estacao & { bicicletas: any[] })[]> {
-    return prisma.estacao.findMany({
+  static async getEstacoesComBicicletas(): Promise<(Estacao & { bicicletas: Bicicleta[] })[]> {
+    const estacoes = await prisma.estacao.findMany({
       include: {
         bicicletas: {
           where: {
@@ -49,5 +49,13 @@ export class EstacaoModel {
       },
       orderBy: { nome: 'asc' },
     })
+    
+    return estacoes.map(estacao => ({
+      ...estacao,
+      bicicletas: estacao.bicicletas.map(bicicleta => ({
+        ...bicicleta,
+        status: bicicleta.status as 'DISPONIVEL' | 'EM_USO' | 'MANUTENCAO' | 'INDISPONIVEL'
+      }))
+    }))
   }
 }
