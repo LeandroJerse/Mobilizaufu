@@ -1,0 +1,186 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Usuario {
+  id                String    @id @default(cuid())
+  nome              String
+  email             String    @unique
+  senha             String
+  tipoUsuario       String    // ESTUDANTE, PROFESSOR_FUNCIONARIO, ADMINISTRADOR
+  telefone          String?
+  cursoDepartamento String?
+  matricula         String?   // Para estudantes
+  periodo           String?   // Para estudantes
+  siape             String?   // Para professores/funcionários
+  cargo             String?   // Para professores/funcionários
+  nivelAcesso       String?   // Para administradores
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relacionamentos
+  reservas          Reserva[]
+  caronasOferecidas Carona[] @relation("CaronaOferecida")
+  participacoesCarona ParticipacaoCarona[]
+  impactosAmbientais ImpactoAmbiental[]
+
+  @@map("usuarios")
+}
+
+model Estacao {
+  id              String    @id @default(cuid())
+  nome            String
+  localizacaoLat  Float
+  localizacaoLng  Float
+  capacidadeTotal Int
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relacionamentos
+  bicicletas      Bicicleta[]
+  reservasDevolucao Reserva[] @relation("ReservaDevolucao")
+
+  @@map("estacoes")
+}
+
+model Bicicleta {
+  id                    String    @id @default(cuid())
+  numeroSerie           String    @unique
+  status                String    // DISPONIVEL, EM_USO, MANUTENCAO, INDISPONIVEL
+  dataUltimaManutencao DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relacionamentos
+  estacaoId             String
+  estacao               Estacao   @relation(fields: [estacaoId], references: [id])
+  reservas              Reserva[]
+
+  @@map("bicicletas")
+}
+
+model Reserva {
+  id                    String    @id @default(cuid())
+  dataHoraReserva       DateTime  @default(now())
+  dataHoraRetirada      DateTime?
+  dataHoraDevolucao     DateTime?
+  codigoQR              String?   @unique
+  status                String    // ATIVA, CONCLUIDA, CANCELADA, EXPIRADA
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  // Relacionamentos
+  usuarioId             String
+  usuario               Usuario   @relation(fields: [usuarioId], references: [id])
+  bicicletaId           String
+  bicicleta             Bicicleta @relation(fields: [bicicletaId], references: [id])
+  estacaoDevolucaoId    String?
+  estacaoDevolucao      Estacao?  @relation("ReservaDevolucao", fields: [estacaoDevolucaoId], references: [id])
+
+  @@map("reservas")
+}
+
+model Carona {
+  id                String    @id @default(cuid())
+  origem            String
+  destino           String
+  dataHora          DateTime
+  vagasDisponiveis  Int
+  observacoes       String?
+  status            String    // ATIVA, CONCLUIDA, CANCELADA
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relacionamentos
+  usuarioOfereceId  String
+  usuarioOferece    Usuario   @relation("CaronaOferecida", fields: [usuarioOfereceId], references: [id])
+  participacoes     ParticipacaoCarona[]
+
+  @@map("caronas")
+}
+
+model ParticipacaoCarona {
+  id                String    @id @default(cuid())
+  statusParticipacao String   // PENDENTE, ACEITA, RECUSADA, CANCELADA
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  // Relacionamentos
+  caronaId          String
+  carona            Carona    @relation(fields: [caronaId], references: [id])
+  usuarioParticipaId String
+  usuarioParticipa  Usuario   @relation(fields: [usuarioParticipaId], references: [id])
+
+  @@unique([caronaId, usuarioParticipaId])
+  @@map("participacoes_carona")
+}
+
+model LinhaOnibus {
+  id        String    @id @default(cuid())
+  numeroLinha String  @unique
+  nome      String
+  operadora String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  // Relacionamentos
+  horarios  HorarioOnibus[]
+
+  @@map("linhas_onibus")
+}
+
+model PontoParada {
+  id            String    @id @default(cuid())
+  nome          String
+  localizacaoLat Float
+  localizacaoLng Float
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // Relacionamentos
+  horarios      HorarioOnibus[]
+
+  @@map("pontos_parada")
+}
+
+model HorarioOnibus {
+  id              String    @id @default(cuid())
+  horarioPrevisto String    // HH:MM
+  horarioReal     String?   // HH:MM
+  status          String    // NO_PRAZO, ATRASADO, ADIANTADO, CANCELADO
+  data            DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relacionamentos
+  linhaId         String
+  linha           LinhaOnibus @relation(fields: [linhaId], references: [id])
+  pontoId         String
+  ponto           PontoParada @relation(fields: [pontoId], references: [id])
+
+  @@map("horarios_onibus")
+}
+
+model ImpactoAmbiental {
+  id              String    @id @default(cuid())
+  tipoTransporte  String    // BICICLETA, CARONA, ONIBUS
+  distanciaKm     Float
+  co2Economizado  Float     // em kg
+  dataCalculo     DateTime  @default(now())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relacionamentos
+  usuarioId       String
+  usuario         Usuario   @relation(fields: [usuarioId], references: [id])
+
+  @@map("impactos_ambientais")
+}
